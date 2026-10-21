@@ -15,6 +15,19 @@
 | Mohammed Syed         | syed.mohammed0975@gmail.com | syed@umd.edu                 | Eyepatch0           | MCTS / AlphaZero        |
 | Shobha Gupta          | s2002290902g@gmail.com      | gupta29@umd.edu              | Under-the-stars     | Age and startup success |
 
+- [ ] @gilesgreene
+- [ ] @Delvitron1019
+- [ ] @sohail-umd
+- [ ] @Sim2200
+- [ ] @caicedoss
+- [ ] @Jav359003
+- [ ] @aahanrembersu07
+- [ ] @Niveda-227
+- [ ] @bkk8403
+- [ ] @Worldsoldure00
+- [ ] @Eyepatch0
+- [ ] @Under-the-stars
+
 ## Resources
 
 - Office hours

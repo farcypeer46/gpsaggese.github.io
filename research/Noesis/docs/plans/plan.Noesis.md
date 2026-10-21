@@ -779,6 +779,49 @@
   `PR_M1`'s hard-constraint baseline and the scored variant, answering
   `09_open_questions.tex` item 3 empirically rather than leaving it open
 
+### `PR_M16`: [ ] Economic Surplus: Noesis vs a Posted-price Baseline
+
+- Background: theory says a double-sided market allocates better than posted
+  prices; we want the number for serving tokens through `NoesisMarket` versus a
+  posted-price router in the style of OpenRouter, as proof that Noesis is better
+  and as input to marketing (`PR_M17`)
+- Add pure functions in `market/` (no I/O), specified in
+  `research/Noesis/docs/specs/spec.PR_M16.md`:
+  - `compute_surplus(bids, asks, fills)`: consumer, producer, and total surplus,
+    maximum surplus, and deadweight loss, with `Bid.p_max` as willingness to pay
+    and `Ask.p_min` as seller cost
+  - `run_posted_price_round(bids, asks, markup)`: each seller posts
+    `p_min * (1 + markup)` and each bid goes to the cheapest eligible ask
+  - `make_surplus_scenario(seed, ...)`: seeded books with overlapping bid and ask
+    prices, so some pairs cross and some do not
+  - `compare_mechanisms(bids, asks, markup)`: both mechanisms on the same book
+- Unit tests: a single crossing pair gives total surplus `n_tasks * (p_max - p_min)`;
+  Noesis total equals maximum surplus over 30 seeds; baseline total at `markup=0`
+  is at most Noesis total and does not increase with `markup`; every fill satisfies
+  `p_min <= price <= p_max`
+- Result: one table of surplus per mechanism on a reproducible book; the result
+  assumes truthful bids and depends on `markup`, so `PR_M17` reports a range
+
+### `PR_M17`: [ ] Notebook: Surplus Gain and Marketing Summary
+
+- Background: `PR_M16` gives the numbers for one book; the claim needs a sweep and a
+  story for people who do not know market theory
+- Add a notebook, paired with a `.py` and with logic in a `*_utils.py`, following
+  the repo's notebook conventions:
+  - Sweep `markup`, demand-to-supply ratio, price spread, and tier count with
+    several seeds each, and report the mean gain with a confidence interval
+  - Plot surplus gain versus `markup` and versus the demand-to-supply ratio
+  - State every assumption (willingness to pay and cost distributions, baseline
+    routing rule, truthful bids) next to the result
+  - Write a plain-language summary for marketing: buyers and sellers together get
+    X% more value through Noesis; do not describe OpenRouter as centrally planned
+- TODO(gp): anchor the seller cost distribution and the default `markup` on real
+  OpenRouter price data, and check OpenRouter's actual routing rule
+- Tests: the notebook executes top to bottom, headless, with
+  `helpers_root/dev_scripts_helpers/notebooks/run_nbconvert.py`
+- Result: a reproducible, quantified surplus gain with its assumptions, and a short
+  text that `plan.marketing.md` can reuse
+
 ## Unscheduled: NoesisServer
 
 ### `PR_S2`: [ ] Routing Policy + Cost/quality Measurement
