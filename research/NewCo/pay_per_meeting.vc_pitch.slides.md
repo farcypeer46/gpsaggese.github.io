@@ -26,9 +26,8 @@
     from core functions
   - Centralizes all the knowledge for finding and booking meetings using AI
   - Carries the cost of failed outreach attempts
-  - Provides a meeting-as-a-service to companies
 
-- @Raising@: $1M Series Seed round to reach \<MILESTONE\>
+- @Raising@: $1M Series Seed round to reach \$1M ARR in 18 months
 
 # Problem and Solution
 
@@ -40,12 +39,10 @@
   - Talent to fuel expansion
   - ...
 
-// TODO(gp): Find reference
-- @Under 1% hit rate@: hundreds of cold emails yield a handful of replies
+- @Under 1% hit rate@: 0.45% of cold emails get a reply, 1 in 6,000 a meeting
+  (Belkins, 2026)
 
-// TODO(gp): Find reference
-- @20 hours a week@: finding emails and decision makers, writing,
-  and following up
+- @28 hours a week@: reps spend 70% of their time not selling (Salesforce, 2024)
 
 - @Complexities and risks@:
   - Spam flags hurt the domain (e.g., Google pauses accounts for days)
@@ -61,7 +58,7 @@
 - @Without NewCo@: teams stitch together tools (e.g., Sales Navigator,
   PhantomBuster, email finders, and mail merge)
   - Pay for every attempt
-  - Need for specialized epertise that teams don't have
+  - Need for specialized expertise that teams don't have
   - Inefficiency and lack of expertise bring email yield to < 1%
 
 - @With NewCo@: the customer states who to meet and how many meetings,
@@ -82,7 +79,7 @@
 :::: {.column width=60%}
 - @Customer in control@: approves every prospect before any outreach
   - E.g., For _"50 meetings with Heads of Growth at Series A US fintech startups"_,
-    NewCo lists about 500 prospects to approve
+    NewCo lists about 500 prospects to approve in batches
 
 - @Agents do the work@: search LinkedIn, PitchBook, and Crunchbase, then
   email, message, and call
@@ -156,7 +153,7 @@ digraph ProductFlow {
     penwidth  = 1.0;
     margin    = 16;
 
-    Find     [label=<<b>2. Find prospects</b><br/><font point-size="10" color="#41719C">About 10x meetings</font>>,
+    Find     [label=<<b>2. Find prospects</b><br/><font point-size="10" color="#41719C">About 50x meetings</font>>,
               fillcolor="#D3E3F3", color="#7CA6CE", fontcolor="#1F4E79"];
     Outreach [label=<<b>4. Reach out</b><br/><font point-size="10" color="#41719C">Email, LinkedIn, phone</font>>,
               fillcolor="#D3E3F3", color="#7CA6CE", fontcolor="#1F4E79"];
@@ -187,31 +184,30 @@ digraph ProductFlow {
 
 * Why Now: Agents Got Cheap, Email Got Strict
 
-// TODO(gp): Provide <MINUTES> : not in the input
-- **Agents can do the research**: work that takes a sales rep \<MINUTES\> minutes
+// TODO(gp): Check the cost math : $80K OTE / 2,000 hours = $40/h, Sonnet 5.5 at $2 / $10 per MTok for 30K tokens in, 1.5K out
+- **Agents can do the research**: work that takes a sales rep about 20 minutes
+  (about \$13 of pay) costs under \$0.10 of AI tokens
   - Profile each prospect
   - Write a custom email per company
 
 - **Email rules getting stricter**: since February 2024, Gmail requires senders of
   5,000+ emails a day to authenticate and stay under a 0.3% spam rate (Google, 2024)
 
-// TODO(gp): Check prices and speeds : from team tests in the I-Corps notes, the test date is not stated
-- **Contact data is a commodity**: 
-  - E.g., \$0.016 to \$0.03 per email
+// TODO(gp): Check the test date of the team prices : Hunter.io list prices (Oct
+// 2026) match the range
+- **Contact data is a commodity**:
+  - E.g., \$0.016 to \$0.03 per email in team tests, \$0.015 to \$0.025 per
+    credit at Hunter.io list prices
   - The problem is the "intelligence" now to find the signal in the data
-
 
 * Pipeline Built and Running Since 2024
 
-// TODO(gp): Check whether the $10M is the total raised or per startup
 - **Track record**: this pipeline helped more than 60 UMD startups raise \$10M
   in seed funding and book more than 6,600 interviews
 
-// TODO(gp): Provide meetings booked, paying customers, and letters of intent : not in the input
 - **Commercial**: \<MEETINGS\> meetings booked, \<CUSTOMERS\> paying
   customers, \<LOIS\> letters of intent as of \<MONTH_YEAR\>
 
-// TODO(gp): Check the start date : the meeting notes discuss lead automation on 2024-06-03, so the pipeline may be older
 - **Live since June 2024**: in-house pipeline from Sales Navigator search to
   a custom email per company
 
@@ -228,7 +224,9 @@ digraph ProductFlow {
 
 * Everyone Else Bills for Effort
 
-// TODO(gp): Check pricing and domain risk of appointment-setting agencies : not in the input, some may already charge per meeting
+// TODO(gp): Check agency domain risk : depends on the agency, some send from domains they set up for the client
+// TODO(gp): Check AI SDR domain risk : 11x sets up and warms managed mailboxes, the domains still carry the customer brand
+// TODO(gp): Check per-meeting agencies : Belkins (2024) quotes $50 to $500 per appointment, so the title is not true for all agencies
 ```{=typst}
 #styled-table(
   headers: ("Option", "Customer pays for", "Finds prospects", "Who takes domain risk", "Books meeting"),
@@ -236,37 +234,48 @@ digraph ProductFlow {
     ("Manual outreach", "Staff time", "By hand", "Customer", "By hand"),
     ("Hunter.io, Dropcontact, Snov.io", "Each email found", "Emails only", "Customer", "No"),
     ("Sales Navigator, PhantomBuster", "Seats, credits", "Yes", "Customer", "No"),
-    ("Appointment-setting agencies", "<MODEL>", "Yes", "<RISK>", "Yes"),
+    ("AI SDRs (11x, Artisan)", "License, $36K+ a year", "Yes", "Shared", "Yes"),
+    ("Appointment agencies", "Retainer, $2K-10K a month", "Yes", "Varies", "Yes"),
     ("NewCo", "Confirmed meeting", "AI agents", "NewCo", "Yes"),
   ),
-  col-widths: (1.8fr, 1.2fr, 1fr, 1.2fr, 1fr),
+  col-widths: (2fr, 1.4fr, 1fr, 1.1fr, 0.9fr),
   bold-first-col: true,
+  width: 100%,
 )
 ```
 
-// TODO(gp): Provide the moat that stops agencies and tools from copying the pricing : not in the input
 - **NewCo's edge**: paid only on outcome, while taking on the outreach work
   and the domain risk
 
-* Pricing: \$\<PRICE\> per Confirmed Meeting
+// TODO(gp): Check the moat : proposed, the $50 cost per meeting is the estimate on the Pricing slide
+- **Moat**: about \$50 per meeting with AI agents vs. \$670 with a human SDR,
+  and reply data from every campaign sharpens targeting
 
-// TODO(gp): Provide <PRICE> and <REORDERS> : not in the input
-- **Pricing**: \$\<PRICE\> per confirmed meeting, sold in packs of 10, 50,
-  or 100
+* Pricing: \$250 per Confirmed Meeting
 
-- **Repeat buying**: \<REORDERS\> packs per customer a year
+// TODO(gp): Check the price : proposed, inside the $150 to $500 market range and about 1/3 of in-house cost
+- **Pricing**: \$250 per confirmed meeting, sold in packs of 10, 50, or 100
+  - An in-house SDR costs about \$670 per meeting: \$80K median OTE for a
+    quota of 10 held meetings a month (Bridge Group, 2025)
 
-// TODO(gp): Check prospects per meeting : the product doc plans about 10 (a 10% meeting rate), but the problem slide states a hit rate below 1%
+// TODO(gp): Check repeat buying : proposed target, no customer data yet
+- **Repeat buying**: 3 packs of 10 per customer a year, about \$7,500
+
+// TODO(gp): Check prospects per meeting : proposed 50 (0.5% of emails at 4 emails each), the product doc planned 10
+// TODO(gp): Check cost per prospect : data $0.03 + AI $0.08 + inboxes $0.05 + Sales Navigator $0.04 = about $0.20
+// TODO(gp): Check cost per meeting : 50 x $0.20 + $15 human review and scheduling + $5 tools, x 1.25 for unbilled no-shows, rounded up to $50
 - **Cost driver**: cost per meeting = cost per prospect $\times$ prospects
-  contacted per meeting, planned at about 10
+  contacted per meeting, planned at \$0.20 $\times$ 50
+  - Human review and scheduling dominate the cost, so margin stays near 70%
+    even at 200 prospects per meeting
 
-// TODO(gp): Provide cost per meeting, gross margin, LTV, and CAC : not in the input
+// TODO(gp): Check LTV / CAC : $200 gross profit x 30 meetings a year x 2-year life = $12K LTV, $2K CAC
 - **Unit economics**
   ```{=typst}
   #styled-table(
     headers: ("Price per meeting", "Cost per meeting", "Gross margin", "LTV / CAC"),
     rows: (
-      ("$<PRICE>", "$<COST>", "<GM>%", "<RATIO>"),
+      ("$250", "$50", "80%", "6x"),
     ),
     bold-first-col: false,
   )
@@ -277,23 +286,26 @@ digraph ProductFlow {
 * Land NSF I-Corps Startups, Then Expand
 
 // TODO(gp): Check buyer, channel, and motion: chosen by AI, not in the input
+// TODO(gp): Check customers and ARR : proposed, at $7,500 a customer a year, 50 customers = $375K, $3M = 400, $12M = 1,600 (the SOM)
 
 ::: columns
-:::: {.column width=60%}
-- **Beachhead**: NSF I-Corps startups commercializing university research,
-  bought by the founders, sold through email and LinkedIn with a pilot pack
-  of 10 meetings
+:::: {.column width=65%}
+- **Beachhead**: NSF I-Corps startups, about 1,400 founded since 2011
+  (NSF, 2023)
+  - Sold to founders via email and LinkedIn, with a pilot pack of 10 meetings
 
-- **Months 0-12**: win NSF I-Corps startups, reach \<N\> paying customers
+- **Months 0-12**: win NSF I-Corps startups, reach 50 paying customers
 
-- **Months 12-30**: expand to \<ADJACENT_SEGMENT\> via \<CHANNEL_2\>, reach
-  \$\<ARR_1\> ARR
+- **Months 12-30**: expand to seed and Series A B2B startups via
+  accelerators and VCs, reach \$3M ARR
 
-- **Months 30-60**: scale through \<NEW_CHANNEL\>, reach \$\<ARR_2\> ARR
+- **Months 30-60**: scale to small B2B firms via self-serve checkout and CRM
+  marketplaces, reach \$12M ARR
 
-- **Target CAC**: \$\<CAC\> per customer, paid back in \<MONTHS\> months
+// TODO(gp): Check CAC : proposed, $2K / ($6K gross profit a year / 12) = 4 months
+- **Target CAC**: \$2,000 per customer, paid back in 4 months
 ::::
-:::: {.column width=40%}
+:::: {.column width=35%}
 
 ```graphviz
 digraph GoToMarket {
@@ -325,11 +337,11 @@ digraph GoToMarket {
 
   // beachhead goal : orange | later phases : blue
 
-  Beachhead [label=<<b>1. Land</b><br/><font point-size="13" color="#946A2E">Months 0-12<br/>&lt;N&gt; customers</font>>,
+  Beachhead [label=<<b>1. Land</b><br/><font point-size="13" color="#946A2E">Months 0-12<br/>50 customers</font>>,
              fillcolor="#FBEBD4", color="#D9A85F", fontcolor="#6B4517"];
-  Expand    [label=<<b>2. Expand</b><br/><font point-size="13" color="#41719C">Months 12-30<br/>$&lt;ARR_1&gt; ARR</font>>,
+  Expand    [label=<<b>2. Expand</b><br/><font point-size="13" color="#41719C">Months 12-30<br/>$3M ARR</font>>,
              fillcolor="#D3E3F3", color="#7CA6CE", fontcolor="#1F4E79"];
-  Scale     [label=<<b>3. Scale</b><br/><font point-size="13" color="#41719C">Months 30-60<br/>$&lt;ARR_2&gt; ARR</font>>,
+  Scale     [label=<<b>3. Scale</b><br/><font point-size="13" color="#41719C">Months 30-60<br/>$12M ARR</font>>,
              fillcolor="#D3E3F3", color="#7CA6CE", fontcolor="#1F4E79"];
 
   Beachhead -> Expand -> Scale;
@@ -351,17 +363,16 @@ digraph GoToMarket {
   - Inputs: 5.5M US firms (Census BDS), about 10 meetings per rep a month
     (FullEnrich), price range of \$150 to \$500 per booked meeting (Smartlead)
 
-// TODO(gp): Provide <SAM> and <N_REACH> : not in the input
-- **SAM \$\<SAM\> a year**: \<N_REACH\> teams reachable today through email
-  and LinkedIn
+// TODO(gp): Check the SAM filter : NAICS 51 (17K) + 52 (28K) + 54 (112K) firms with 10-499 staff, at NewCo price and pack size
+- **SAM \$1.2B a year**: 157K US tech, finance, and services firms with
+  10-499 staff (Census SUSB) $\times$ 30 meetings $\times$ \$250
 
-// TODO(gp): Provide <SOM>, <YEARS>, <SHARE> : not in the input
-- **SOM \$\<SOM\> in \<YEARS\> years**: \<SHARE\>% of SAM, starting from the
-  beachhead
+// TODO(gp): Check the SOM : proposed, matches the $12M ARR of the go-to-market plan
+- **SOM \$12M in 5 years**: 1% of SAM, about 1,600 customers
 
-// TODO(gp): Provide a top-down cross-check from an analyst report : not in the input
-// TODO(gp): Check the cross-check: the AI SDR category is narrower than the TAM
-- **Cross-check**: MarketsandMarkets sizes the AI SDR market at \$4.12B in 2025
+// TODO(gp): Check the cross-check: the AI SDR category counts software only, so it is narrower than the TAM
+- **Cross-check**: AI SDR software is \$4.12B in 2025, growing 29.5% a year
+  (MarketsandMarkets)
 ::::
 :::: {.column width=40%}
 
@@ -398,7 +409,7 @@ digraph MarketSize {
     Tam [label="B2B teams that run outbound"];
 
     subgraph cluster_sam {
-      label     = "SAM: $<SAM> a year";
+      label     = "SAM: $1.2B a year";
       labelloc  = "t";
       fontname  = "Helvetica-Bold";
       fontsize  = 12.5;
@@ -409,10 +420,10 @@ digraph MarketSize {
       penwidth  = 1.0;
       margin    = 14;
 
-      Sam [label="Reachable via email and LinkedIn"];
+      Sam [label="Tech, finance, and services\nfirms with 10-499 staff"];
 
       subgraph cluster_som {
-        label     = "SOM: $<SOM> in <YEARS> years";
+        label     = "SOM: $12M in 5 years";
         labelloc  = "t";
         fontname  = "Helvetica-Bold";
         fontsize  = 12.5;
@@ -454,29 +465,30 @@ digraph MarketSize {
 // TODO(gp): Provide <ROLE> and <CREDENTIAL> : the Project doc lists the name and email only
 - **Samarth KaPatel**, \<ROLE\>: \<CREDENTIAL\>
 
-* Raising \<ASK\> for \<RUNWAY\> Months
+* Raising \$1M for 18 Months
 
 ::: columns
 :::: {.column width=60%}
-// TODO(gp): Provide <ASK>, <ROUND>, <RUNWAY>, and the milestone values : not in the input
-- **The round**: \<ASK\> \<ROUND\>, \<RUNWAY\> months of runway
+// TODO(gp): Check the runway : proposed, $1M / 18 months = about $55K net burn a month
+- **The round**: \$1M Series Seed, 18 months of runway
 
+// TODO(gp): Check the milestones : proposed, 130 customers x 30 meetings a year x $250 = about $1M ARR
 - **Milestones**
-  1. \<CUSTOMERS\> paying customers, \<MEETINGS\> meetings a month
-  2. Cost per meeting under \$\<COST\>, gross margin over \<GM\>%
-  3. \$\<ARR\> ARR, ready for the next round
+  1. 130 paying customers, 330 meetings a month
+  2. Cost per meeting under \$50, gross margin over 80%
+  3. \$1M ARR, ready for a Series A
 ::::
 :::: {.column width=40%}
-// TODO(gp): Provide the use of funds split : not in the input, the four parts must sum to 100%
+// TODO(gp): Check the use of funds split : proposed, sums to 100%
 - **Use of funds**
   ```{=typst}
   #styled-table(
     headers: ("Area", "Share"),
     rows: (
-      ("Product", "<P1>%"),
-      ("Infrastructure", "<P2>%"),
-      ("Sales", "<P3>%"),
-      ("Operations", "<P4>%"),
+      ("Product", "40%"),
+      ("Infrastructure", "15%"),
+      ("Sales", "30%"),
+      ("Operations", "15%"),
     ),
     col-widths: (1.5fr, 1fr),
     bold-first-col: true,
@@ -497,24 +509,47 @@ digraph MarketSize {
 
 - **Working pipeline**: built and in use since 2024
 
-- **The ask**: \<ASK\> to reach \$\<ARR\> ARR in \<RUNWAY\> months
+- **The ask**: \$1M to reach \$1M ARR in 18 months
 
 * Sources
 
-- **Google**: _"Email sender guidelines FAQ"_, Google Workspace Admin Help
-  (2024), https://support.google.com/a/answer/14229414
+- **Belkins**: _"What Are B2B Cold Email Response Rates? (2026 Study)"_,
+  https://belkins.io/blog/cold-email-response-rates
 
-- **Census Bureau**: _"Business Dynamics Statistics"_, 2022 active firm count
-  via YCharts, https://ycharts.com/indicators/categories/nonfinancial_business_statistics
+- **Salesforce**: _"State of Sales"_, 6th ed. (2024),
+  https://www.salesforce.com/news/stories/sales-ai-statistics-2024/
 
-- **FullEnrich**: _"SDR Metrics"_, vendor benchmark for meetings per rep,
-  https://fullenrich.com/content/sdr-metrics
+- **Bridge Group**: _"SDR Models, Metrics and Compensation"_ (2025),
+  https://www.bridgegroupinc.com/research/2025-sdr-models-metrics-report-the-bridge-group
 
-- **Smartlead**: _"What Is B2B Appointment Setting"_, vendor price ranges
-  (2026), https://www.smartlead.ai/blog/what-is-b2b-appointment-setting
+- **Anthropic**: _"Pricing"_ (2026), https://platform.claude.com/docs/en/about-claude/pricing
 
-- **MarketsandMarkets**: _"AI SDR Market: Global Forecast to 2030"_, market
-  report (2025),
+- **Google**: _"Email sender guidelines FAQ"_ (2024), https://support.google.com/a/answer/14229414
+
+- **Hunter.io**: _"Pricing"_ (2026), https://hunter.io/pricing
+
+- **11x**: _"Alice Pricing"_ (2026), https://www.11x.ai/products/alice/pricing
+
+- **Belkins**: _"B2B Appointment Setting Costs"_ (2024),
+  https://belkins.io/blog/appointment-setting-costs-pricing-models
+
+* Sources (Continued)
+
+- **NSF**: _"New NSF effort expands I-Corps Teams training program"_ (2023),
+  https://www.nsf.gov/funding/initiatives/i-corps/updates/new-nsf-effort-expands-i-corpstm-teams-training-program
+
+- **Census Bureau**: _"Business Dynamics Statistics"_ via YCharts (2022),
+  https://ycharts.com/indicators/categories/nonfinancial_business_statistics
+
+- **FullEnrich**: _"SDR Metrics"_, https://fullenrich.com/content/sdr-metrics
+
+- **Smartlead**: _"What Is B2B Appointment Setting"_ (2026),
+  https://www.smartlead.ai/blog/what-is-b2b-appointment-setting
+
+- **Census Bureau**: _"Statistics of U.S. Businesses"_ (2022),
+  https://www.census.gov/data/tables/2022/econ/susb/2022-susb-annual.html
+
+- **MarketsandMarkets**: _"AI SDR Market: Global Forecast to 2030"_ (2025),
   https://www.marketsandmarkets.com/Market-Reports/ai-sdr-market-83561460.html
 
 - **UMD startups**: internal slides on pipeline results,
