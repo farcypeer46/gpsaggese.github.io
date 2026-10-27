@@ -62,9 +62,19 @@
   `helpers_root/docs/tools/ai/all.auto_task.how_to_guide.md`
 - How to Create a PR With Claude Code:
   `helpers_root/docs/tools/ai/all.create_pr_with_claude_code.how_to_guide.md`
-- Plan Work:
+- Plan Work, with the sequence of skills from idea to merged PR:
   `helpers_root/docs/planning/all.plan_work.how_to_guide.md`
-- How to Create a PR With Claude Code:
+- How to Document Research:
+  `helpers_root/docs/planning/all.document_research.how_to_guide.md`
+- Review Flows With LLMs:
+  `helpers_root/docs/tools/ai/all.ai_review.how_to_guide.md`
+- Code Review Tools:
+  `helpers_root/docs/tools/ai/all.code_review_tools.reference.md`
+- Issue Workflow:
+  `helpers_root/docs/work_organization/all.issue_workflow.explanation.md`
+- Where to Add Material:
+  `helpers_root/docs/documentation_meta/all.where_to_add_material.explanation.md`
+- How to Create a PR With Claude Code (policy of this repo):
   `policies/pr_process.how_to_guide.md`
 - AI Tools:
   `helpers_root/dev_scripts_helpers/ai/README.md`
@@ -86,6 +96,22 @@ topic.
   `helpers_root/.claude/templates/`
 - Rules for auto_task Plans:
   `helpers_root/.claude/skills/auto_task.rules.md`
+- Rules for Project Docs (PRD, design, plan, progress log, decisions):
+  `helpers_root/.claude/skills/project.rules.md`
+- Skills for Project Docs:
+  `helpers_root/.claude/skills/project.write_prd/SKILL.md`,
+  `helpers_root/.claude/skills/architecture.write_design/SKILL.md`,
+  `helpers_root/.claude/skills/project.create_plan/SKILL.md`,
+  `helpers_root/.claude/skills/project.update_progress/SKILL.md`
+- Project Doc Templates:
+  `helpers_root/.claude/templates/project_prd.template.md`,
+  `helpers_root/.claude/templates/project_design.template.md`,
+  `helpers_root/.claude/templates/project_plan.template.md`,
+  `helpers_root/.claude/templates/project_progress.template.md`,
+  `helpers_root/.claude/templates/project_decisions.template.md`,
+  `helpers_root/.claude/templates/project_how_we_work.template.md`
+- PR Description Template:
+  `helpers_root/.claude/templates/github_PR_description.template.md`
 - AI Instruction Template:
   `helpers_root/.claude/templates/ai.instruction_template.md`
 - auto_task Template:
