@@ -2,13 +2,14 @@
 
 ## Goal
 
-- Build a pipeline that turns a loose list of papers into a ranked list of candidate
-  trading strategies, with a score per paper and per criterion
-- Users: quant researchers, who use the ranking to pick the next papers to replicate
+- Build a pipeline that turns a loose list of papers into a CSV table of candidate
+  trading strategies, with the full text and a set of extracted features per paper
+- Users: quant researchers, who use the table to pick the next papers to replicate
 - Background:
-  - Idea: `research/Estimate_paper_quality/idea.md`
+  - Idea: `research/Estimate_academic_paper_quality/idea.md`
   - Reference format: `.claude/skills/references.rules.md`
-  - Existing paper rating: `.claude/skills/paper.rules.md`, `# Paper Rating`
+  - Paper rating rules, applied for Paper quality: `.claude/skills/paper.rules.md`,
+    `# Paper Rating`
   - Download and conversion tool:
     `helpers_root/dev_scripts_helpers/download/download_academic_paper_to_md.py`
 
@@ -17,14 +18,15 @@
 - **Quant researcher, first run**:
   - Pastes a list of papers collected from many sources (partial titles, URLs, DOIs)
     and gets one clean list of references
+  - Gives a local PDF for a paper that the pipeline cannot download
   - Gets the full text of each paper as markdown, to read it and to feed it to other
     tools
-  - Ranks the papers by how promising they are and by how easy they are to replicate
-    with Atlas data
-  - Reads why a paper got its score, to accept or override the score
+  - Compares the papers feature by feature (e.g., reported Sharpe ratio, asset
+    class), to judge how promising they are and how easy they are to replicate
+  - Reads where each feature value comes from, to check it in the paper
 - **Quant researcher, rerun**:
-  - Adds new papers to a list that was already scored
-  - Gets an updated ranking without paying again for the papers already scored
+  - Adds new papers to a list that was already processed
+  - Gets an updated CSV without paying again for the papers already processed
 
 ## Requirements
 
@@ -32,11 +34,12 @@
 
 - `R1`: The pipeline accepts a text file with one paper per line, where a line is any
   of:
-  - A partial or full title
+  - A partial or full title, optionally followed by the authors in parentheses
   - An arXiv URL or arXiv ID
   - A DOI or DOI URL
   - An SSRN URL
   - A publisher URL or a direct PDF URL
+  - A path to a local PDF, e.g., for a paper behind a paywall or an SSRN block
 
 ### Normalize the List
 
@@ -58,8 +61,9 @@
 
 ### Download and Convert
 
-- `R8`: For each resolved paper with a download link, the pipeline saves the PDF and
-  its markdown conversion
+- `R8`: For each resolved paper with a download link or with a local PDF, the
+  pipeline saves the PDF and its markdown conversion
+  - The PDFs are saved in the repo
 - `R9`: Both files use the base name of `.claude/skills/references.rules.md`, `#
   Format to Use in File Names`
   - E.g., `2016.Ribeiro_et_al.Why_Should_I_Trust_You.pdf` and `.md`
@@ -68,67 +72,76 @@
 - `R11`: A rerun does not download or convert again a paper whose PDF and markdown
   already exist
 
-### Score
+### Extract Features
 
-- `R12`: The pipeline scores each converted paper on each of these criteria:
+- `R12`: The pipeline reports each converted paper with these features:
 
-  | Criterion          | What it measures                                           |
-  | :----------------- | :--------------------------------------------------------- |
-  | Paper quality      | Authority of the authors, the institution, and the venue   |
-  | Performance        | Reported Sharpe ratio and other performance metrics        |
-  | Recency            | Publication year                                           |
-  | Asset class        | Target asset class, e.g., US equities                      |
-  | Theoretical domain | Domain of the theory, e.g., micro vs. macro                |
-  | Data availability  | Availability in Atlas of the data the paper needs          |
-  | Mechanism          | Nature of the reported mechanism: causal vs. associational |
+  | Feature            | What it reports                                              |
+  | :----------------- | :----------------------------------------------------------- |
+  | Paper quality      | Rating from 1 to 5 of page length, affiliation, and citations (see `R16`) |
+  | Performance        | Reported Sharpe ratio and other performance metrics, as free text |
+  | Recency            | Publication year                                             |
+  | Asset class        | Target asset class, e.g., US equities, as free text          |
+  | Theoretical domain | Domain of the theory, e.g., micro vs. macro, as free text    |
+  | Mechanism          | Nature of the reported mechanism: causal vs. associational, as free text |
 
-- `R13`: Each criterion score is an integer from 1 (low) to 5 (high), or `unknown`
-  when the paper and the lookup sources do not give the information
-- `R14`: Each criterion score comes with its evidence:
-  - The value it is based on, e.g., `Sharpe 1.4, out of sample, 2005 to 2020`
-  - Where the value comes from: section, table, or page of the paper, or the name of
+- `R13`: Each feature has a value, or `unknown` when the paper and the lookup sources
+  do not give the information
+  - The pipeline does not convert a feature into a score, except the Paper quality
+    rating of `R16`
+  - E.g., a paper that describes no trading strategy (a survey, a method paper) has
+    `unknown` for Performance, and stays in the report
+- `R14`: Each feature value comes with its evidence:
+  - The text that it is based on, e.g., `Sharpe 1.4, out of sample, 2005 to 2020`
+  - Where the text comes from: section, table, or page of the paper, or the name of
     the external source
-- `R15`: The pipeline extracts these facts from each paper and reports them as
-  values:
+- `R15`: The pipeline extracts these facts from each paper and reports them as free
+  text, as the paper states them:
   - Reported performance metrics: Sharpe ratio, annual return, volatility, max
     drawdown
+    - When the paper gives several Sharpe ratios (e.g., gross and net of costs, in
+      sample and out of sample), the pipeline reports all of them with the label
+      that the paper gives
   - Sample period, and in sample vs. out of sample
   - Target asset class and universe
   - Data the paper needs: assets, frequency, fields
-- `R16`: For each dataset the paper needs, the pipeline reports one status from the
-  Atlas coverage list:
-  - Available in prod
-  - Available in eval only
-  - Not available
-- `R17`: The pipeline computes a total score per paper as a weighted mean of the
-  known criterion scores
-  - The user can change the weights without changing code
-  - The report states which criteria were `unknown` and left out of the mean
-- `R18`: A rerun does not score again a paper that already has scores, unless the
-  user asks for it
+- `R16`: The Paper quality rating follows `.claude/skills/paper.rules.md`,
+  `# Paper Rating`:
+  - Three signals: page length, best affiliation of the authors, and citation count
+  - Each signal scores from 1 to 5, and the rating is the mean of the known signals,
+    rounded half up to a whole number
+  - A signal that the pipeline does not find is `unknown` and is left out of the mean
+  - The report gives the rating, the score of each signal, and the source and the
+    date of the citation count
+- `R17`: A rerun does not extract again the features of a paper that already has
+  them, unless the user asks for it
 
 ### Output
 
-- `R19`: The pipeline writes one report that ranks the scored papers by total score,
-  from high to low, with one row per paper:
+- `R18`: The pipeline writes one CSV report with one row per paper, in the order of
+  `R7`, with these columns:
   - The reference
-  - The score of each criterion
-  - The total score
-- `R20`: The report lists the unresolved papers and the failed papers, with the
-  reason, apart from the ranked papers
-- `R21`: For each scored paper, the pipeline writes a score file with the criterion
-  scores, the evidence, and the extracted facts
-  - The score file uses the same base name as the PDF of the paper (see `R9`)
+  - The value of each feature
+  - The score of each signal of the Paper quality rating
+- `R19`: The pipeline lists the unresolved papers and the failed papers, with the
+  reason, in a CSV apart from the report of `R18`
+- `R20`: For each converted paper, the pipeline writes a features file with the
+  feature values, the evidence, and the extracted facts
+  - The features file uses the same base name as the PDF of the paper (see `R9`)
 
 ## Non-Goals
 
 - Does not search for papers: it works only on the list from the user
 - Does not replicate or backtest the strategy of a paper
 - Does not check that the reported results are true: it reports what the paper claims
-- Does not add missing data to Atlas
 - Does not bypass paywalls or access controls: a paper without a public PDF is
-  reported as failed
-- Does not replace the general paper rating of `.claude/skills/paper.rate/SKILL.md`
+  reported as failed, unless the user gives a local PDF
+  - SSRN papers are in scope: a public SSRN PDF is not behind an access control, so
+    the download tool gets it through a Chrome that it starts and closes
+- Does not combine the features into a total score and does not rank the papers: the
+  user sorts the CSV
+- Does not replace `.claude/skills/paper.rate/SKILL.md`, which rates one paper: the
+  pipeline applies the same rules to a list (see `R16`)
 
 ## Success Metrics
 
@@ -138,48 +151,25 @@
   yield both a PDF and a markdown file
 - **Extraction accuracy**: at least 90% of the extracted Sharpe ratios match the
   value that a researcher reads in the paper, on a labeled set of 20 papers
-- **Ranking agreement**: Spearman correlation of at least 0.6 between the total score
-  and the ranking of a researcher, on a labeled set of 20 papers
 
 ## Constraints and Assumptions
 
 - Download and conversion reuse
   `helpers_root/dev_scripts_helpers/download/download_academic_paper_to_md.py`, as
   the idea states
-- Atlas is a data platform
-  - It has a coverage list (assets, frequencies, eval vs. prod) that the pipeline can
-    read
 - Bibliographic facts and citation counts come from a lookup source, never from the
   memory of an LLM, per `.claude/skills/paper.rules.md`
-- The papers describe trading strategies or return predictors
-  - The criteria Performance, Asset class, and Data availability assume this
-- Some sources block scripted downloads (e.g., SSRN)
-- The user runs the pipeline with network access and with access to Atlas
+- An input list has about 100 papers: a first run processes all of them, and a rerun
+  does not pay again for the papers already processed (see `R11` and `R17`)
+- Most papers describe trading strategies or return predictors, but a paper may not
+  (e.g., a survey, a method paper)
+  - The features Performance and Asset class can be `unknown` for such a paper (see
+    `R13`)
+- SSRN blocks scripted downloads: the download tool gets SSRN PDFs through a Chrome
+  that it starts and closes (`download_with_chrome.py`), so the pipeline needs
+  Chrome
+- The user runs the pipeline with network access
 
 ## Open Questions
 
-1. What maps each criterion to the 1 to 5 scale?
-   - E.g., which Sharpe ratio scores 5
-   - E.g., which asset classes and which theoretical domains prefers
-   - E.g., how to tell a causal mechanism from an associational one
-2. Which Sharpe ratio counts for Performance: gross or net of costs, in sample or out
-   of sample?
-3. Does Paper quality reuse the rating of `.claude/skills/paper.rules.md` (page
-   length, affiliation, citations), or does it use the authors, the institution, and
-   the venue, as the idea states?
-4. What are the default weights of the criteria in the total score?
-5. Are some criteria filters instead of scores?
-   - E.g., drop a paper whose data Atlas does not have, instead of ranking it low
-6. How does the pipeline read the Atlas coverage list, and who owns it?
-7. Is data available only in eval worth less than data available in prod, and by how
-much?
-8. What does the pipeline do with a paper that does not describe a trading strategy
-(e.g., a survey)?
-9. Can the user give a local PDF for a paper that cannot be downloaded (e.g.,
-paywall, SSRN block)?
-10. Where are the outputs stored, and are the PDFs committed to the repo?
-11. What is the expected size of an input list (10, 100, or 1000 papers)?
-    - The answer sets the limits on cost and run time
-12. Are the targets in "Success Metrics" right, and who labels the test sets?
-13. How do the top-ranked papers become replication tasks (e.g., one GitHub issue per
-    paper)? -> Project
+None.
