@@ -27,17 +27,18 @@ import research.Noesis.checker.checker_calibration_report as rnochcare
 import research.Noesis.checker.checker_calibration_runtime as rnochcaru
 import research.Noesis.checker.checker_canaries as rnochcan
 import research.Noesis.checker.checker_models as rnochmod
+import research.Noesis.checker.checker_sink as rnochsink
 import research.Noesis.checker.checker_store as rnochsto
 import research.Noesis.common.noesis_db as rnonodb
 import research.Noesis.common.noesis_settings as rnonoset
 import research.Noesis.gateway.gateway_faults as rnogafau
 import research.Noesis.gateway.gateway_openrouter as rnogaope
-import research.Noesis.prober.prober_runtime as rnoprrun
 import research.Noesis.prober.prober_worker as rnoprwor
 
 _LOG = logging.getLogger(__name__)
 
 DEFAULT_BANK_VERSION = "v1"
+DEFAULT_CHECKER_VERSION = "m2-v1"
 DEFAULT_MINIMUM_SURVIVORS = 150
 DEFAULT_BANK_DIR = os.path.join(rnonoset.NOESIS_DIR, "data", "canaries")
 DEFAULT_REPORT_PATH = os.path.join(
@@ -85,7 +86,9 @@ async def _run_calibrate(args: argparse.Namespace) -> int:
     targets = tuple(
         parse_target(value, rnochmod.CalibrationRole.HEALTHY)
         for value in args.healthy
-    ) + (parse_target(args.weak, rnochmod.CalibrationRole.WEAK),)
+    ) + (
+        parse_target(args.weak, rnochmod.CalibrationRole.WEAK),
+    )
     policy = rnochmod.CalibrationPolicy(
         repetitions=args.repetitions,
         max_tokens=args.max_tokens,
@@ -161,6 +164,8 @@ async def _run_probe(args: argparse.Namespace) -> int:
         max_tokens=min(args.max_tokens, settings.max_tokens_cap),
         timeout_multiplier=settings.timeout_multiplier,
     )
+    checker_policy = rnochmod.WindowPolicy()
+    sink = rnochsink.RecordingVerdictSink()
     provider = rnogaope.OpenRouterProvider(api_key)
     faults = rnogafau.FaultRegistry()
     try:
@@ -168,21 +173,44 @@ async def _run_probe(args: argparse.Namespace) -> int:
         try:
             await rnonodb.apply_migrations(pool)
             if args.once:
-                result = await rnoprrun.run_due_probes(
+                result = await rnoprwor.run_probe_cycle(
                     pool,
                     provider,
                     faults,
                     policy,
                     schedule_secret,
                     datetime.now(timezone.utc),
+                    sink=sink,
+                    checker_policy=checker_policy,
+                    checker_version=DEFAULT_CHECKER_VERSION,
                 )
+                finalized = sum(
+                    evaluation.finalized
+                    for evaluation in result.checker.evaluations
+                )
+                errors = result.probes.errors + result.checker.errors
                 print(
-                    "Probe cycle: executions=%s errors=%s"
-                    % (len(result.executions), len(result.errors))
+                    "Probe/checker cycle: executions=%s finalized=%s"
+                    " published=%s errors=%s"
+                    % (
+                        len(result.probes.executions),
+                        finalized,
+                        len(result.checker.published_reports),
+                        len(errors),
+                    )
                 )
-                for error in result.errors:
+                for report in result.checker.published_reports:
+                    print(
+                        "  contract=%s seller=%s verdict=%s"
+                        % (
+                            report.contract_id,
+                            report.seller_id,
+                            report.verdict.value,
+                        )
+                    )
+                for error in errors:
                     print("  %s" % error)
-                return 1 if result.errors else 0
+                return 1 if errors else 0
             stop_event = asyncio.Event()
             loop = asyncio.get_running_loop()
             for signal_name in (signal.SIGINT, signal.SIGTERM):
@@ -194,11 +222,21 @@ async def _run_probe(args: argparse.Namespace) -> int:
                 policy,
                 schedule_secret,
                 stop_event,
+                sink=sink,
+                checker_policy=checker_policy,
+                checker_version=DEFAULT_CHECKER_VERSION,
                 poll_interval_s=args.poll_interval,
             )
             print(
-                "Probe worker stopped: cycles=%s executions=%s errors=%s"
-                % (result.cycles, result.executions, result.errors)
+                "Probe worker stopped: cycles=%s executions=%s finalized=%s"
+                " published=%s errors=%s"
+                % (
+                    result.cycles,
+                    result.executions,
+                    result.finalized_contracts,
+                    result.published_reports,
+                    result.errors,
+                )
             )
             return 0
         finally:
