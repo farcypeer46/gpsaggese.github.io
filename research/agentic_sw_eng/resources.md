@@ -70,8 +70,8 @@
   `helpers_root/docs/tools/ai/all.ai_review.how_to_guide.md`
 - Code Review Tools:
   `helpers_root/docs/tools/ai/all.code_review_tools.reference.md`
-- Issue Workflow:
-  `helpers_root/docs/work_organization/all.issue_workflow.explanation.md`
+- Use GitHub (Projects and Issues):
+  `helpers_root/docs/work_organization/all.use_github.how_to_guide.md`
 - Where to Add Material:
   `helpers_root/docs/documentation_meta/all.where_to_add_material.explanation.md`
 - How to Create a PR With Claude Code (policy of this repo):
