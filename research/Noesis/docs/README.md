@@ -27,6 +27,7 @@ placeholder is committed until the reviewed paid run is executed.
 | `glossary.md`                  | Terms used across the code and docs                                                   | Onboarding |
 | `how_we_work.md`               | Branch, PR, test, and review conventions                                              | Onboarding |
 | `onboarding.md`                | Setup, run, test, and first tasks                                                     | Onboarding |
+| `run_market_supply_demo.how_to_guide.md` | Commands that show OpenRouter prices becoming asks and clearing against a bid     | Demo       |
 | `plan.md`                      | Roadmap (`PR_M*`, `PR_S*`, `PR_P*`) and MVP plan (claim, rules, criteria, risks, tasks) | Plans      |
 | `progress.md`                  | Live MVP status and history                                                           | Plans      |
 | `marketing_plan.md`            | Bootstrapping supply and demand liquidity                                             | Plans      |
@@ -34,5 +35,6 @@ placeholder is committed until the reviewed paid run is executed.
 | `spec.PR_M16.md`               | Implementation spec: economic surplus of Noesis vs a posted-price baseline            | Specs      |
 | `spec.PR_P2.md`                | Implementation spec: containerized cloud deployment                                   | Specs      |
 | `spec.PR_P2b.md`               | Implementation spec: Postgres backend                                                 | Specs      |
+| `spec.PR_S4.md`                | Implementation spec: contract-window runtime and market-reporting boundary             | Specs      |
 | `dev_notes.md`                 | Build and OpenAPI-generation notes                                                    | Notes      |
 | `gp_todos.md`                  | Open TODOs                                                                            | Notes      |
