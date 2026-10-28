@@ -5,7 +5,7 @@
 - Read next:
   - `how_we_work.md` (process)
   - `glossary.md` (terms)
-  - `gateway_design.md` (design)
+  - `design.gateway.md` (design)
 
 ## 1. What Noesis Is (5 Minutes)
 
@@ -15,8 +15,8 @@
   request, test providers with known-answer questions, and lower the reputation of
   sellers that under-deliver
 - Background: the paper `papers/Noesis/Noesis.pdf` (by GP), GP's roadmap
-  `research/Noesis/docs/plans/plan.Noesis.md`, and the MVP spec `docs/specs/mvp_prd.md`
-- Status: `docs/plans/mvp_progress.md`
+  `research/Noesis/docs/plan.md` (with the MVP claim and success criteria)
+- Status: `docs/progress.md`
 
 ## 2. Access You Need
 
@@ -128,27 +128,49 @@
 - Any OpenAI SDK works: set `base_url="http://localhost:8000/v1"`, the buyer key
   as `api_key`, and send the header `X-Noesis-Contract`
 
-## 6. Read the Code in This Order
+## 6. Validate Calibration and Probing
 
-1. `docs/gateway_design.md`: the picture and the request flow
+- Validate all 300 canary candidates and print the planned provider-call count
+  without spending money:
+
+  ```bash
+  > python3 -m research.Noesis.prober.prober_cli calibrate \
+      --healthy groq=meta-llama/llama-3.3-70b-instruct \
+      --healthy together=meta-llama/llama-3.3-70b-instruct \
+      --weak deepinfra=meta-llama/llama-3.1-8b-instruct
+  ```
+
+- `--execute` makes paid calls, persists results, and replaces the pending
+  `docs/findings/calibration.md`; review the targets and call count first.
+- With a calibrated active bank and active contracts, run one scheduler pass:
+
+  ```bash
+  > python3 -m research.Noesis.prober.prober_cli probe --once
+  ```
+
+- Omit `--once` for the recurring worker. Stop it cleanly with Ctrl-C.
+
+## 7. Read the Code in This Order
+
+1. `docs/design.gateway.md`: the picture and the request flow
 2. `gateway_providers.py`: the interface everything plugs into
 3. `gateway_api.py`: the main endpoint, top to bottom
 4. `gateway_routing.py`, `gateway_request_log.py`, `gateway_openrouter.py`
 5. `gateway/test/test_gateway_api.py`: how the whole thing is exercised
 6. GP's `batch_call_auction.py` (the market milestone builds on it)
 
-## 7. Pick a First Task
+## 8. Pick a First Task
 
-- Open tasks with owners are in `docs/plans/mvp_plan.md` §3; the next milestone is the
+- Open tasks with owners are in `docs/plan.md` (Task Breakdown); the next milestone is the
   checker (M2)
 - Good first tasks:
   - Add test questions to the canary bank (M2, T2.1): no prior code knowledge needed
   - Add a test for an edge case you find while reading
   - Improve a doc that confused you
-- Then follow `how_we_work.md`: plan -> approval -> issue -> branch in your fork
-  -> PR to GP's repo
+- Then follow `how_we_work.md`: plan -> approval -> issue -> feature branch in the
+  upstream repository -> PR to `master`
 
-## 8. Common Problems
+## 9. Common Problems
 
 | Symptom | Fix |
 |---|---|

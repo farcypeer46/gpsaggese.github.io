@@ -5,10 +5,12 @@
 
 ## Description of Files
 
-| File                  | Description                                                      |
-| :-------------------- | :--------------------------------------------------------------- |
-| `detection_math.py`   | Exact false-alarm and detection probabilities of the violation rules |
-| `spike_openrouter.py` | Measure pinned OpenRouter providers for one model; writes `docs/findings/` |
+| File                      | Description                                       |
+| :------------------------ | :------------------------------------------------ |
+| `detection_math.py`       | Exact false-alarm and detection probabilities     |
+| `generate_canary_bank.py` | Reproducibly generate versioned canary candidates |
+| `spike_openrouter.py`     | Measure pinned OpenRouter providers for one model |
+| `demo_supply_asks.py`     | Show OpenRouter prices becoming one ask per seller and clearing against a bid (`PR_S9`) |
 
 ## Description of Executables
 
@@ -16,6 +18,13 @@
 
   ```bash
   > scripts/detection_math.py
+  ```
+
+- Regenerate the v1 canary candidate bank:
+
+  ```bash
+  > python3 research/Noesis/scripts/generate_canary_bank.py \
+      --output-dir research/Noesis/data/canaries
   ```
 
 - Dry run of the OpenRouter spike (no key, no spend):
@@ -28,4 +37,13 @@
 
   ```bash
   > research/Noesis/scripts/spike_openrouter.py --n 20
+  ```
+- Supply adapter demo on the checked-in catalog sample (no key, no network):
+  ```bash
+  > research/Noesis/scripts/demo_supply_asks.py
+  ```
+- Same against the live OpenRouter catalog (read-only, no spend; reads
+  `OPENROUTER_API_KEY` from the env or `research/Noesis/.env`):
+  ```bash
+  > research/Noesis/scripts/demo_supply_asks.py --live
   ```
