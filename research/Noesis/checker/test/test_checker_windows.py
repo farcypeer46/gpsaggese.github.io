@@ -7,12 +7,13 @@ import datetime
 from typing import Iterable, Optional
 
 import helpers.hunit_test as hunitest
+
 import research.Noesis.checker.checker_evidence as rnochevi
 import research.Noesis.checker.checker_models as rnochmod
 import research.Noesis.checker.checker_windows as rnochwin
 import research.Noesis.gateway.gateway_providers as rnogapro
 
-_START = datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)
+_START = datetime.datetime(2026, 1, 1, tzinfo=datetime.UTC)
 _TERMS = rnochmod.ContractTerms(42, 2.0, 0.9, 0.85)
 _POLICY = rnochmod.WindowPolicy()
 

@@ -282,6 +282,41 @@ class ContractEvaluation:
 
 
 @dataclasses.dataclass(frozen=True)
+class WindowEvidenceCounts:
+    """
+    Represent usable buyer and canary evidence in one contract window.
+    """
+
+    eligible_buyer_requests: int
+    eligible_canaries: int
+
+    def __post_init__(self) -> None:
+        if self.eligible_buyer_requests < 0:
+            raise ValueError("eligible_buyer_requests must not be negative")
+        if self.eligible_canaries < 0:
+            raise ValueError("eligible_canaries must not be negative")
+
+
+@dataclasses.dataclass(frozen=True)
+class WindowReadiness:
+    """
+    Represent whether evidence collection for one window should stop.
+    """
+
+    ready: bool
+    reason: WindowCloseReason
+    counts: WindowEvidenceCounts
+    deadline: datetime
+
+    def __post_init__(self) -> None:
+        if self.deadline.utcoffset() is None:
+            raise ValueError("deadline must be timezone-aware")
+        expected_ready = self.reason != WindowCloseReason.NOT_READY
+        if self.ready != expected_ready:
+            raise ValueError("ready and reason are inconsistent")
+
+
+@dataclasses.dataclass(frozen=True)
 class ProbeScheduleItem:
     """
     Represent one deterministic canary slot in a contract window.
