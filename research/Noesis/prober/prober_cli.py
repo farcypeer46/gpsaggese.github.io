@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Calibrate the canary bank or run the scheduled-probe worker.
 
@@ -6,12 +7,12 @@ reviewing the printed provider-call count.
 
 Examples:
 
-> python3 -m research.Noesis.prober.prober_cli calibrate \
+> research/Noesis/prober/prober_cli.py calibrate \
     --healthy groq=meta-llama/llama-3.3-70b-instruct \
     --healthy together=meta-llama/llama-3.3-70b-instruct \
     --weak deepinfra=meta-llama/llama-3.1-8b-instruct
-> python3 -m research.Noesis.prober.prober_cli probe --once
-> python3 -m research.Noesis.prober.prober_cli probe
+> research/Noesis/prober/prober_cli.py probe --once
+> research/Noesis/prober/prober_cli.py probe
 """
 
 import argparse
