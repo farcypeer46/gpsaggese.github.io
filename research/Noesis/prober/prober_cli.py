@@ -100,7 +100,8 @@ async def _run_calibrate(args: argparse.Namespace) -> int:
         )
     call_count = len(canaries) * len(targets) * policy.repetitions
     print(
-        f"Calibration plan: {len(canaries)} candidates x {len(targets)} targets"
+        f"Calibration plan: {len(canaries)} candidate canaries x"
+        f" {len(targets)} targets"
         f" x {policy.repetitions} repetitions = {call_count} paid provider calls"
     )
     if not args.execute:

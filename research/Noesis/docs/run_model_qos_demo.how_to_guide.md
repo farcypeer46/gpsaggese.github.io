@@ -9,7 +9,7 @@
 
 ```mermaid
 flowchart LR
-    bank["300 versioned candidates<br/>6 task families"] --> dry["Calibration validation<br/>no calls or writes"]
+    bank["300 candidate canaries<br/>6 task families"] --> dry["Calibration validation<br/>no calls or writes"]
     bank --> fake["Fake-provider calibration"]
     fake --> gate["Healthy = 100%<br/>Weak <= 60%"]
     gate --> active["Calibrated bank"]
@@ -48,11 +48,11 @@ Expected result:
 
 These six tests demonstrate that:
 
-- The committed bank contains exactly 300 reproducible candidates, balanced at
-  50 candidates across each of six families.
+- The committed bank contains exactly 300 reproducible candidate canaries,
+  balanced at 50 candidate canaries across each of six families.
 - Every committed expected answer passes the versioned deterministic grader.
 - Healthy fake targets pass while a weaker fake target fails, causing the
-  candidate to survive calibration.
+  candidate canary to survive calibration.
 - A provider failure becomes incomplete evidence instead of an incorrect
   answer.
 - A scheduled probe uses the normal pinned-provider route, and provider-visible
@@ -73,7 +73,7 @@ The `calibrate` command is validation-only unless `--execute` is present:
 Expected output:
 
 ```text
-Calibration plan: 300 candidates x 3 targets x 3 repetitions = 2700 paid provider calls
+Calibration plan: 300 candidate canaries x 3 targets x 3 repetitions = 2700 paid provider calls
 Validation only: no database writes or provider calls were made.
 Review the plan, then repeat with --execute to run it.
 ```
